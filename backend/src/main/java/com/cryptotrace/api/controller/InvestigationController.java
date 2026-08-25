@@ -4,6 +4,7 @@ import com.cryptotrace.api.dto.InvestigationRequest;
 import com.cryptotrace.api.dto.InvestigationResponse;
 import com.cryptotrace.api.model.Investigation;
 import com.cryptotrace.api.repository.InvestigationRepository;
+import com.cryptotrace.api.service.BlockchainAnalysisService;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +17,13 @@ public class InvestigationController {
 
     private final InvestigationRepository repository =
             new InvestigationRepository();
+
+    private final BlockchainAnalysisService blockchainAnalysisService;
+
+    public InvestigationController(
+            BlockchainAnalysisService blockchainAnalysisService) {
+        this.blockchainAnalysisService = blockchainAnalysisService;
+    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -58,6 +66,19 @@ public class InvestigationController {
                 investigation.getReportedAddress(),
                 investigation.getChain(),
                 investigation.getStatus()
+        );
+    }
+
+    @PostMapping("/{id}/analyze")
+    public String analyzeInvestigation(
+            @PathVariable String id) {
+
+        Investigation investigation = repository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Investigation not found"));
+
+        return blockchainAnalysisService.analyzeWallet(
+                investigation.getReportedAddress()
         );
     }
 
