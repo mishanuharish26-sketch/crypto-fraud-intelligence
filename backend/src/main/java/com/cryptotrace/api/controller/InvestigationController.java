@@ -8,6 +8,7 @@ import com.cryptotrace.api.service.BlockchainAnalysisService;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
 
@@ -59,7 +60,10 @@ public class InvestigationController {
 
         Investigation investigation = repository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Investigation not found"));
+                        new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                "Investigation not found"
+                        ));
 
         return new InvestigationResponse(
                 investigation.getInvestigationId(),
@@ -75,7 +79,10 @@ public class InvestigationController {
 
         Investigation investigation = repository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Investigation not found"));
+                        new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                "Investigation not found"
+                        ));
 
         return blockchainAnalysisService.analyzeWallet(
                 investigation.getReportedAddress()
