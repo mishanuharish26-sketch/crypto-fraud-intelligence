@@ -6,6 +6,8 @@ import com.cryptotrace.api.model.Investigation;
 import com.cryptotrace.api.repository.InvestigationRepository;
 import com.cryptotrace.api.service.BlockchainAnalysisService;
 
+import jakarta.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -29,7 +31,7 @@ public class InvestigationController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public InvestigationResponse createInvestigation(
-            @RequestBody InvestigationRequest request) {
+            @Valid @RequestBody InvestigationRequest request) {
 
         String investigationId = "INV-" +
                 UUID.randomUUID()
